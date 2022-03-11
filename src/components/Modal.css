@@ -1,0 +1,170 @@
+.modal {
+  display: flex;
+  place-content: center;
+  z-index: 5;
+  
+}
+.message {
+  background: rgba(19, 15, 23, 0.5);
+  width: 100vh;
+  font-weight: 800;  
+  font-size: 3rem;
+  position: absolute;
+  top: 50vh;
+  z-index: 15;
+}
+.col-1 {
+  background-color: #ff00ff;
+}
+
+.col-2 {
+  background-color: #0000ff;
+}
+
+.col-3 {
+  background-color: #00ffff;
+}
+
+.col-4 {
+  background-color: #00ff00;
+}
+
+.col-5 {
+  background-color: #ff0000;
+}
+
+.confetti-container {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 400px;
+  left: 300px;
+  z-index: 10;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+
+  z-index: 10;
+}
+
+.anim-x {
+  animation: ease-in 0.6s infinite;
+  transform: skew(20deg);
+}
+
+.anim-y {
+  animation: ease-out 0.6s infinite;
+}
+
+.delay {
+  animation-delay: 0.2s;
+}
+
+.anim-x-1 {
+  animation-name: anim-x-1;
+}
+
+.anim-x-2 {
+  animation-name: anim-x-2;
+}
+
+.anim-x-3 {
+  animation-name: anim-x-3;
+}
+
+.anim-x-4 {
+  animation-name: anim-x-4;
+}
+
+.anim-y-1 {
+  animation-name: anim-y-1;
+}
+
+.anim-y-2 {
+  animation-name: anim-y-2;
+}
+
+.anim-y-3 {
+  animation-name: anim-y-3;
+}
+
+@keyframes anim-x-1 {
+  0% {
+    transform: skew(20deg) translateX(0);
+  }
+  100% {
+    transform: skew(20deg) rotate(-180deg) translateX(-43px);
+  }
+}
+
+@keyframes anim-x-2 {
+  0% {
+    transform: skew(20deg) translateX(0);
+  }
+  100% {
+    transform: skew(20deg) rotate(-180deg) translateX(-68px);
+  }
+}
+
+@keyframes anim-x-3 {
+  0% {
+    transform: skew(20deg) translateX(0);
+  }
+  100% {
+    transform: skew(20deg) rotate(180deg) translateX(34px);
+  }
+}
+
+@keyframes anim-x-4 {
+  0% {
+    transform: skew(20deg) translateX(0);
+  }
+  100% {
+    transform: skew(20deg) rotate(180deg) translateX(63px);
+  }
+}
+
+@keyframes anim-y-1 {
+  0% {
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-198px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-178px);
+  }
+}
+
+@keyframes anim-y-2 {
+  0% {
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-283px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-263px);
+  }
+}
+
+@keyframes anim-y-3 {
+  0% {
+    transform: translateY(0);
+  }
+  80% {
+    opacity: 1;
+    transform: translateY(-324px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-304px);
+  }
+}
