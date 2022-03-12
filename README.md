@@ -26,3 +26,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 - This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 - The original idea comes from The Net Ninja's [Build a Memory Game with React](https://www.youtube.com/watch?v=ZCKohZwGZMw&list=PL4cUxeGkcC9iQ7g2eoNXHCJBBBz40S_Lm)
 - I coded the whole REACT parts by myself, but after finished the whole project, I triest to watch The Net Ninja's video to refactor some parts of my code.
+
+## Wish List
+- localstorage
+- ranking

@@ -25,7 +25,8 @@ function App() {
   const [isStart, setIsStart] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [announce, setAnnounce] = useState('')
-  const [time, setTime] = useState(0);
+  // const [time, setTime] = useState(0);
+  const [disable, setDisable] = useState(false);
 
   const shuffleCards = () => {
     const shuffledCards = [...items, ...items]
@@ -41,33 +42,35 @@ function App() {
     setCountdownTimer(3000);
     setShowModal(false);
     setAnnounce('');
+    setDisable(false);
+    setIsStart(false);
 
   }
 
   const handleClick = (card) => {
-    if (new Date().getTime() - time > 300) {
-      if (countdownTimer !== 0 && !showModal) {
-        
-        if (tern === 10) { setIsStart(true) };
-          if (select < 2) {
-          choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
-          setSelect(prev => prev + 1);
-        }
+    // if (new Date().getTime() - time > 300) {
+    if (countdownTimer !== 0 && !showModal) {
+
+      if (tern === 10) { setIsStart(true) };
+      if (select < 2) {
+        !choiceOne ? setChoiceOne(card) : setChoiceTwo(card);
+        setSelect(prev => prev + 1);
       }
-      setTime( new Date().getTime())
     }
-    else {
-      setAnnounce('calm down');
-      setShowModal(true);
-      setIsStart(false);
-    }
+    //   setTime( new Date().getTime())
+    // }
+    // else {
+    //   setAnnounce('calm down');
+    //   setShowModal(true);
+    //   setIsStart(false);
+    // }
   }
 
   const turnCards = () => {
     setSelect(0);
     setChoiceOne(null);
     setChoiceTwo(null);
-    setTern(prv => prv - 1);
+    setDisable(false);
   };
 
   //shuffle cards init
@@ -119,23 +122,31 @@ function App() {
   //flip back cards
   useEffect(() => {
     if (choiceOne && choiceTwo) {
-      if (choiceOne.src === choiceTwo.src) {
-        setMatchedCards(prev => prev+1)
+      setDisable(true);
+      if (choiceOne.id === choiceTwo.id) {
+        setAnnounce('calm down');
+        setShowModal(true);
+        setIsStart(false);
+      } else if (choiceOne.src === choiceTwo.src) {
+        setMatchedCards(prev => prev + 1)
         setCards(prev => {
           return prev.map(card => {
-          if (choiceOne.src === card.src) {
-            return { ...card, matched: true}; 
-          } else {
-            return card;
-          }
-          })})
-          setSelect(0);
+            if (choiceOne.src === card.src) {
+              return { ...card, matched: true };
+            } else {
+              return card;
+            }
+          })
+        })
+        setSelect(0);
+        setDisable(false);
       } else {
+        setTern(prv => prv - 1);
         setTimeout(() => {
           turnCards();
         }, 1000);
       }
-    }
+    } 
 
   }, [choiceOne, choiceTwo]);
 
@@ -159,6 +170,7 @@ function App() {
             card={card}
             handleClick={handleClick}
             flipped={card === choiceOne || card === choiceTwo || card.matched}
+            disable={disable}
           />)}
       </div>
 
