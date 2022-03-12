@@ -1,15 +1,15 @@
 import './SingleCard.css';
 import React from 'react'
 
-function SingleCard({ card, handleClick, id, idx }) {
+function SingleCard({ card, handleClick }) {
     const cardHandle = () => {
-        handleClick(card, id, idx)
+        handleClick(card)
     }
 
     return (
         <div
             className='single-card'
-            id={id}
+            id={card.id}
             onClick={cardHandle}
         >
 

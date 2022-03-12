@@ -13,7 +13,6 @@ const items = [
   { src: 'shield' },
   { src: 'sword' },
 ];
-const cards = [...items, ...items];
 
 function App() {
   const [shuffledCards, setShuffledCards] = useState([]);
@@ -30,10 +29,13 @@ function App() {
   const shuffleCards = () => {
     if (matchedCards.length > 0) {
       matchedCards.map(id => document.getElementById(id).classList.remove('flip'));
-    } else if (hit < 20) {
+    } else if (select === 1 ) {
       document.getElementById(choiceOne.id).classList.remove('flip');
     }
-    setShuffledCards(cards.sort(() => 0.5 - Math.random()));
+    setShuffledCards([...items, ...items]
+      .sort(() => 0.5 - Math.random())
+      .map((card) => ({ ...card, id: Math.random() }))
+    );
     setSelect(0);
     setChoiceOne({});
     setChoiceTwo({});
@@ -44,20 +46,22 @@ function App() {
     setAnnounce('');
   }
 
-  const handleClick = (card, id, idx) => {
+  const handleClick = (card) => {
     if (countdownTimer !== 0 && !showModal) {
       if (hit === 20) { setIsStart(true) };
       setHit(prv => prv - 1);
 
-      if (!document.getElementById(id).classList.contains('flip') && select < 2) {
-        document.getElementById(id).classList.toggle('flip');
+      if (!document.getElementById(card.id).classList.contains('flip') && select < 2) {
+        document.getElementById(card.id).classList.toggle('flip');
+        console.log(card.id)
         if (choiceOne.src === undefined) {
-          setChoiceOne({ ...card, id, idx });
+          setChoiceOne({ ...card });
           setSelect(prev => prev + 1);
         } else if (choiceTwo.src === undefined) {
-          setChoiceTwo({ ...card, id, idx });
+          console.log(choiceOne.id)
+          setChoiceTwo({ ...card });
           setSelect(prev => prev + 1);
-        } 
+        }
       }
     }
   }
@@ -77,15 +81,17 @@ function App() {
   const checkGame = () => {
     if (matchedCards.length === 12) {
       setIsStart(false);
-      setCountdownTimer(prev=>prev)
+      setCountdownTimer(prev => prev)
       setAnnounce('congratulations')
       setShowModal(true);
     };
+
     if (countdownTimer === 0) {
       setIsStart(false);
       setAnnounce('time up')
       setShowModal(true);
     };
+
     if (hit <= 0) {
       setIsStart(false);
       setAnnounce('no more chance')
@@ -93,13 +99,19 @@ function App() {
     };
   }
 
+  //shuffle cards init
+  useEffect(() => {
+    shuffleCards();
+  }, [])
 
-  useEffect(()=>{
+  // watch countdown number
+  useEffect(() => {
     checkGame();
   }, [countdownTimer])
 
+  // timer set/clean
   useEffect(() => {
-    if (isStart) {      
+    if (isStart) {
       const timer = () => {
         setCountdownTimer((prev) => {
           if (prev > 0) {
@@ -107,26 +119,24 @@ function App() {
           } else if (prev === 0) {
             clearInterval(intervalId);
             return prev;
-          }});};
+          }
+        });
+      };
 
       const intervalId = setInterval(timer, 1000);
       return () => clearInterval(intervalId);
     }
   }, [isStart]);
 
-
+  //flip back cards
   useEffect(() => {
     if (select > 1) {
       setTimeout(() => {
         turnCards();
-      }, 1000);}
-
+      }, 1000);
+    }
     checkGame();
   }, [select]);
-
-  useEffect(() => {
-    shuffleCards();
-  }, [])
 
   return (
     <div className='App'>
@@ -152,8 +162,6 @@ function App() {
           <SingleCard
             key={idx}
             card={card}
-            id={`${card.src}${idx}`}
-            idx={idx}
             handleClick={handleClick}
           />)}
       </div>
