@@ -6,11 +6,10 @@
 }
 .message {
   background: rgba(19, 15, 23, 0.5);
-  width: 100vh;
+  width: 100vw;
   font-weight: 800;  
   font-size: 3rem;
   position: absolute;
-  top: 40vh;
-  transform: translateY(-60%);
+  top: 55vh; 
   z-index: 15;
 }

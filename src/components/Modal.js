@@ -8,7 +8,7 @@ function Modal({announce}) {
   return (
     <div className='modal'>
       <div className='message'>{announce}!</div>
-      {announce == 'time up' ? null : <Fireworks />}
+      {announce !== 'congratulations' ? null : <Fireworks />}
     </div>
   )
 }

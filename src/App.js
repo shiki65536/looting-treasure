@@ -21,7 +21,7 @@ function App() {
   const [select, setSelect] = useState(0);
   const [choiceOne, setChoiceOne] = useState({});
   const [choiceTwo, setChoiceTwo] = useState({});
-  const [hit, setHit] = useState(0);
+  const [hit, setHit] = useState(20);
   const [countdownTimer, setCountdownTimer] = useState('');
   const [isStart, setIsStart] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -30,14 +30,14 @@ function App() {
   const shuffleCards = () => {
     if (matchedCards.length > 0) {
       matchedCards.map(id => document.getElementById(id).classList.remove('flip'));
-    } else if (hit > 0) {
+    } else if (hit < 20) {
       document.getElementById(choiceOne.id).classList.remove('flip');
     }
     setShuffledCards(cards.sort(() => 0.5 - Math.random()));
     setSelect(0);
     setChoiceOne({});
     setChoiceTwo({});
-    setHit(0);
+    setHit(20);
     setMatchedCards([]);
     setCountdownTimer(3000);
     setShowModal(false);
@@ -46,8 +46,8 @@ function App() {
 
   const handleClick = (card, id, idx) => {
     if (countdownTimer !== 0 && !showModal) {
-      if (hit === 0) { setIsStart(true) };
-      setHit(prv => prv + 1);
+      if (hit === 20) { setIsStart(true) };
+      setHit(prv => prv - 1);
 
       if (!document.getElementById(id).classList.contains('flip') && select < 2) {
         document.getElementById(id).classList.toggle('flip');
@@ -80,12 +80,17 @@ function App() {
       setCountdownTimer(prev=>prev)
       setAnnounce('congratulations')
       setShowModal(true);
-    }
+    };
     if (countdownTimer === 0) {
       setIsStart(false);
       setAnnounce('time up')
       setShowModal(true);
-    }
+    };
+    if (hit <= 0) {
+      setIsStart(false);
+      setAnnounce('no more chance')
+      setShowModal(true);
+    };
   }
 
 
@@ -155,7 +160,7 @@ function App() {
 
       <div className='info'>
         <div className='cell'>
-          <h3><GiLockedChest /> Hits: {hit}</h3>
+          <h3><GiLockedChest /> Chance: {hit}</h3>
         </div>
         <div className='cell'>
           <h3><GiSandsOfTime /> Timer: {countdownTimer / 100}</h3>
