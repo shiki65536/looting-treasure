@@ -25,17 +25,23 @@ function App() {
   const [isStart, setIsStart] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [announce, setAnnounce] = useState('')
+  const [time, setTime] = useState(0);
 
   const shuffleCards = () => {
+    if(new Date().getTime() - time > 1000) {
     if (matchedCards.length > 0) {
       matchedCards.map(id => document.getElementById(id).classList.remove('flip'));
-    } else if (select === 1 ) {
+    } else if (select === 1) {
       document.getElementById(choiceOne.id).classList.remove('flip');
+    } else if (select === 2) {
+      document.getElementById(choiceOne.id).classList.remove('flip');
+      document.getElementById(choiceTwo.id).classList.remove('flip');
     }
     setShuffledCards([...items, ...items]
       .sort(() => 0.5 - Math.random())
       .map((card) => ({ ...card, id: Math.random() }))
     );
+
     setSelect(0);
     setChoiceOne({});
     setChoiceTwo({});
@@ -44,26 +50,25 @@ function App() {
     setCountdownTimer(3000);
     setShowModal(false);
     setAnnounce('');
+    } else {
+      setAnnounce('calm down');
+      setShowModal(true);
+      setIsStart(false);
+    }
+
   }
 
   const handleClick = (card) => {
     if (countdownTimer !== 0 && !showModal) {
       if (hit === 20) { setIsStart(true) };
       setHit(prv => prv - 1);
-
       if (!document.getElementById(card.id).classList.contains('flip') && select < 2) {
         document.getElementById(card.id).classList.toggle('flip');
-        console.log(card.id)
-        if (choiceOne.src === undefined) {
-          setChoiceOne({ ...card });
-          setSelect(prev => prev + 1);
-        } else if (choiceTwo.src === undefined) {
-          console.log(choiceOne.id)
-          setChoiceTwo({ ...card });
-          setSelect(prev => prev + 1);
-        }
+        (choiceOne.src === undefined) ? setChoiceOne({ ...card }) : setChoiceTwo({ ...card });
+        setSelect(prev => prev + 1);
       }
     }
+    setTime(prev=> new Date().getTime())
   }
 
   const turnCards = () => {
@@ -73,28 +78,27 @@ function App() {
       document.getElementById(choiceOne.id).classList.toggle('flip');
       document.getElementById(choiceTwo.id).classList.toggle('flip');
     }
-    setSelect(0)
-    setChoiceOne({})
-    setChoiceTwo({})
+    setSelect(0);
+    setChoiceOne({});
+    setChoiceTwo({});
   };
 
   const checkGame = () => {
     if (matchedCards.length === 12) {
       setIsStart(false);
-      setCountdownTimer(prev => prev)
-      setAnnounce('congratulations')
+      setAnnounce('congratulations');
       setShowModal(true);
     };
 
     if (countdownTimer === 0) {
       setIsStart(false);
-      setAnnounce('time up')
+      setAnnounce('time up');
       setShowModal(true);
     };
 
     if (hit <= 0) {
       setIsStart(false);
-      setAnnounce('no more chance')
+      setAnnounce('no more chance');
       setShowModal(true);
     };
   }
@@ -168,7 +172,7 @@ function App() {
 
       <div className='info'>
         <div className='cell'>
-          <h3><GiLockedChest /> Chance: {hit}</h3>
+          <h3><GiLockedChest /> Chance: {Math.floor(hit / 2)}</h3>
         </div>
         <div className='cell'>
           <h3><GiSandsOfTime /> Timer: {countdownTimer / 100}</h3>
