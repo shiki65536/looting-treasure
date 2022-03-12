@@ -6,21 +6,21 @@ import './App.css';
 import { GiLockedChest, GiSandsOfTime } from 'react-icons/gi';
 
 const items = [
-  { src: 'helmet' },
-  { src: 'potion' },
-  { src: 'ring' },
-  { src: 'scroll' },
-  { src: 'shield' },
-  { src: 'sword' },
+  { src: 'helmet', matched: false },
+  { src: 'potion', matched: false },
+  { src: 'ring', matched: false },
+  { src: 'scroll', matched: false },
+  { src: 'shield', matched: false },
+  { src: 'sword', matched: false },
 ];
 
 function App() {
-  const [shuffledCards, setShuffledCards] = useState([]);
-  const [matchedCards, setMatchedCards] = useState([]);
+  const [cards, setCards] = useState([]);
+  const [matchedCards, setMatchedCards] = useState(0);
   const [select, setSelect] = useState(0);
-  const [choiceOne, setChoiceOne] = useState({});
-  const [choiceTwo, setChoiceTwo] = useState({});
-  const [hit, setHit] = useState(20);
+  const [choiceOne, setChoiceOne] = useState(null);
+  const [choiceTwo, setChoiceTwo] = useState(null);
+  const [tern, setTern] = useState(20);
   const [countdownTimer, setCountdownTimer] = useState('');
   const [isStart, setIsStart] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -28,63 +28,57 @@ function App() {
   const [time, setTime] = useState(0);
 
   const shuffleCards = () => {
-    if(new Date().getTime() - time > 1000) {
-    if (matchedCards.length > 0) {
-      matchedCards.map(id => document.getElementById(id).classList.remove('flip'));
-    } else if (select === 1) {
-      document.getElementById(choiceOne.id).classList.remove('flip');
-    } else if (select === 2) {
-      document.getElementById(choiceOne.id).classList.remove('flip');
-      document.getElementById(choiceTwo.id).classList.remove('flip');
-    }
-    setShuffledCards([...items, ...items]
+    const shuffledCards = [...items, ...items]
       .sort(() => 0.5 - Math.random())
-      .map((card) => ({ ...card, id: Math.random() }))
-    );
+      .map((card) => ({ ...card, id: Math.random() }));
+    setCards(shuffledCards);
 
     setSelect(0);
-    setChoiceOne({});
-    setChoiceTwo({});
-    setHit(20);
-    setMatchedCards([]);
+    setChoiceOne(null);
+    setChoiceTwo(null);
+    setTern(10);
+    setMatchedCards(0);
     setCountdownTimer(3000);
     setShowModal(false);
     setAnnounce('');
-    } else {
-      setAnnounce('calm down');
-      setShowModal(true);
-      setIsStart(false);
-    }
 
   }
 
   const handleClick = (card) => {
-    if (countdownTimer !== 0 && !showModal) {
-      if (hit === 20) { setIsStart(true) };
-      setHit(prv => prv - 1);
-      if (!document.getElementById(card.id).classList.contains('flip') && select < 2) {
-        document.getElementById(card.id).classList.toggle('flip');
-        (choiceOne.src === undefined) ? setChoiceOne({ ...card }) : setChoiceTwo({ ...card });
-        setSelect(prev => prev + 1);
+    if (new Date().getTime() - time > 300) {
+      if (countdownTimer !== 0 && !showModal) {
+        
+        if (tern === 10) { setIsStart(true) };
+          if (select < 2) {
+          choiceOne ? setChoiceTwo(card) : setChoiceOne(card);
+          setSelect(prev => prev + 1);
+        }
       }
+      setTime( new Date().getTime())
     }
-    setTime(prev=> new Date().getTime())
+    else {
+      setAnnounce('calm down');
+      setShowModal(true);
+      setIsStart(false);
+    }
   }
 
   const turnCards = () => {
-    if (choiceOne.src === choiceTwo.src) {
-      setMatchedCards(prev => [...prev, choiceOne.id, choiceTwo.id])
-    } else {
-      document.getElementById(choiceOne.id).classList.toggle('flip');
-      document.getElementById(choiceTwo.id).classList.toggle('flip');
-    }
     setSelect(0);
-    setChoiceOne({});
-    setChoiceTwo({});
+    setChoiceOne(null);
+    setChoiceTwo(null);
+    setTern(prv => prv - 1);
   };
 
-  const checkGame = () => {
-    if (matchedCards.length === 12) {
+  //shuffle cards init
+  useEffect(() => {
+    shuffleCards();
+  }, [])
+
+  // check Game progress
+  useEffect(() => {
+
+    if (matchedCards === 6) {
       setIsStart(false);
       setAnnounce('congratulations');
       setShowModal(true);
@@ -96,22 +90,12 @@ function App() {
       setShowModal(true);
     };
 
-    if (hit <= 0) {
+    if (tern <= 0) {
       setIsStart(false);
       setAnnounce('no more chance');
       setShowModal(true);
     };
-  }
-
-  //shuffle cards init
-  useEffect(() => {
-    shuffleCards();
-  }, [])
-
-  // watch countdown number
-  useEffect(() => {
-    checkGame();
-  }, [countdownTimer])
+  }, [countdownTimer, tern, matchedCards])
 
   // timer set/clean
   useEffect(() => {
@@ -134,51 +118,55 @@ function App() {
 
   //flip back cards
   useEffect(() => {
-    if (select > 1) {
-      setTimeout(() => {
-        turnCards();
-      }, 1000);
+    if (choiceOne && choiceTwo) {
+      if (choiceOne.src === choiceTwo.src) {
+        setMatchedCards(prev => prev+1)
+        setCards(prev => {
+          return prev.map(card => {
+          if (choiceOne.src === card.src) {
+            return { ...card, matched: true}; 
+          } else {
+            return card;
+          }
+          })})
+          setSelect(0);
+      } else {
+        setTimeout(() => {
+          turnCards();
+        }, 1000);
+      }
     }
-    checkGame();
-  }, [select]);
+
+  }, [choiceOne, choiceTwo]);
 
   return (
     <div className='App'>
-      <header>
-        <div className="info">
-          <div>
-            <h1>🏴‍☠️  looting the treasure chest</h1>
-          </div>
-          <div>
-            <button
-              onClick={() => shuffleCards()}
-              className='btn'
-            >
-              New Game
-            </button>
-          </div>
-        </div>
-
+      <header className="info">
+        <h1>🏴‍☠️  looting the treasure</h1>
+        <button className='btn'
+          onClick={() => shuffleCards()}
+        >
+          New Game
+        </button>
       </header>
+
       {showModal ? <Modal announce={announce} /> : null}
+
       <div className='card-column'>
-        {shuffledCards.map((card, idx) =>
+        {cards.map(card =>
           <SingleCard
-            key={idx}
+            key={card.id}
             card={card}
             handleClick={handleClick}
+            flipped={card === choiceOne || card === choiceTwo || card.matched}
           />)}
       </div>
 
-      <div className='info'>
-        <div className='cell'>
-          <h3><GiLockedChest /> Chance: {Math.floor(hit / 2)}</h3>
-        </div>
-        <div className='cell'>
-          <h3><GiSandsOfTime /> Timer: {countdownTimer / 100}</h3>
-        </div>
+      <footer className='info'>
+        <h3><GiLockedChest /> Chance: {tern}</h3>
+        <h3><GiSandsOfTime /> Timer: {countdownTimer / 100}</h3>
+      </footer>
 
-      </div>
     </div>
   )
 };

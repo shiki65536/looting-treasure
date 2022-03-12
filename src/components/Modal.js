@@ -6,7 +6,7 @@ import './Modal.css';
 function Modal({announce}) {
   return (
     <div className='modal'>
-      <div className='message'>{announce}!</div>
+      <div className='message'>{announce} !</div>
       {announce !== 'congratulations' ? null : <Fireworks />}
     </div>
   )

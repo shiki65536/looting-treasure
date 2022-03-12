@@ -36,9 +36,6 @@ button:hover {
   display: flex; 
   justify-content:space-evenly;
 }
-.cell {
-  width: 50%;
-}
 .card-column {
   margin: 30px auto;
   display: grid;

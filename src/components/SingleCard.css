@@ -14,16 +14,16 @@
     transform: rotateY(90deg);
   }
   .back {
-    transition: all 0.3s linear;    
+    transition: all 0.2s linear;    
 
   }
  .flip .front{
     transform: rotateY(0deg);
-    transition-delay: 0.3s;    
+    transition-delay: 0.2s;    
   }
 
  .flip .back{
-  transition: all 0.3s linear;
+  transition: all 0.2s linear;
     transform: rotateY(90deg);
   }
   /*
