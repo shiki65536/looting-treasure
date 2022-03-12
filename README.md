@@ -1,6 +1,7 @@
 # 🏴‍☠️ Looting The Treasure Chest
 
 Let's pick the same card to get the items!
+
 **Hurry up!** We don't have too many time and chances.
 
 ### `npm start`
