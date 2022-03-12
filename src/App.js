@@ -22,9 +22,10 @@ function App() {
   const [choiceOne, setChoiceOne] = useState({});
   const [choiceTwo, setChoiceTwo] = useState({});
   const [hit, setHit] = useState(0);
-  const [countdownTimer, setCountdownTimer] = useState(6000);
+  const [countdownTimer, setCountdownTimer] = useState('');
   const [isStart, setIsStart] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [announce, setAnnounce] = useState('')
 
   const shuffleCards = () => {
     if (matchedCards.length > 0) {
@@ -36,17 +37,17 @@ function App() {
     setSelect(0);
     setChoiceOne({});
     setChoiceTwo({});
-    setHit(0)
+    setHit(0);
     setMatchedCards([]);
-    setCountdownTimer(6000);
+    setCountdownTimer(3000);
     setShowModal(false);
+    setAnnounce('');
   }
 
   const handleClick = (card, id, idx) => {
     if (countdownTimer !== 0 && !showModal) {
+      if (hit === 0) { setIsStart(true) };
       setHit(prv => prv + 1);
-
-      if (hit === 0) { setIsStart(true) }
 
       if (!document.getElementById(id).classList.contains('flip') && select < 2) {
         document.getElementById(id).classList.toggle('flip');
@@ -59,7 +60,6 @@ function App() {
         } 
       }
     }
-
   }
 
   const turnCards = () => {
@@ -75,12 +75,23 @@ function App() {
   };
 
   const checkGame = () => {
-    if (matchedCards.length === 2) {
+    if (matchedCards.length === 12) {
       setIsStart(false);
       setCountdownTimer(prev=>prev)
+      setAnnounce('congratulations')
+      setShowModal(true);
+    }
+    if (countdownTimer === 0) {
+      setIsStart(false);
+      setAnnounce('time up')
       setShowModal(true);
     }
   }
+
+
+  useEffect(()=>{
+    checkGame();
+  }, [countdownTimer])
 
   useEffect(() => {
     if (isStart) {      
@@ -91,15 +102,11 @@ function App() {
           } else if (prev === 0) {
             clearInterval(intervalId);
             return prev;
-          }
-        });
-      };
-      const intervalId = setInterval(timer, 1000);
-      return () => {
-        clearInterval(intervalId);
-      };
-    }
+          }});};
 
+      const intervalId = setInterval(timer, 1000);
+      return () => clearInterval(intervalId);
+    }
   }, [isStart]);
 
 
@@ -107,8 +114,8 @@ function App() {
     if (select > 1) {
       setTimeout(() => {
         turnCards();
-      }, 1000);
-    }
+      }, 1000);}
+
     checkGame();
   }, [select]);
 
@@ -134,7 +141,7 @@ function App() {
         </div>
 
       </header>
-      {showModal ? <Modal /> : null}
+      {showModal ? <Modal announce={announce} /> : null}
       <div className='card-column'>
         {shuffledCards.map((card, idx) =>
           <SingleCard
@@ -151,7 +158,7 @@ function App() {
           <h3><GiLockedChest /> Hits: {hit}</h3>
         </div>
         <div className='cell'>
-          <h3><GiSandsOfTime /> Timer: {countdownTimer === 0 ? 'time up!' : countdownTimer / 100}</h3>
+          <h3><GiSandsOfTime /> Timer: {countdownTimer / 100}</h3>
         </div>
 
       </div>
