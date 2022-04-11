@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import SingleCard from './components/SingleCard';
 import Modal from './components/Modal';
+import './local.js';
 
 import './App.css';
 import { GiLockedChest, GiSandsOfTime } from 'react-icons/gi';
@@ -20,19 +21,17 @@ function App() {
   const [select, setSelect] = useState(0);
   const [choiceOne, setChoiceOne] = useState(null);
   const [choiceTwo, setChoiceTwo] = useState(null);
-  const [tern, setTern] = useState(20);
+  const [tern, setTern] = useState(10);
   const [countdownTimer, setCountdownTimer] = useState('');
   const [isStart, setIsStart] = useState(false);
+  const [disable, setDisable] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [announce, setAnnounce] = useState('')
-  // const [time, setTime] = useState(0);
-  const [disable, setDisable] = useState(false);
 
   const shuffleCards = () => {
-    const shuffledCards = [...items, ...items]
+    setCards([...items, ...items]
       .sort(() => 0.5 - Math.random())
-      .map((card) => ({ ...card, id: Math.random() }));
-    setCards(shuffledCards);
+      .map((card) => ({ ...card, id: Math.random() })));
 
     setSelect(0);
     setChoiceOne(null);
@@ -48,22 +47,13 @@ function App() {
   }
 
   const handleClick = (card) => {
-    // if (new Date().getTime() - time > 300) {
     if (countdownTimer !== 0 && !showModal) {
-
       if (tern === 10) { setIsStart(true) };
       if (select < 2) {
         !choiceOne ? setChoiceOne(card) : setChoiceTwo(card);
         setSelect(prev => prev + 1);
       }
     }
-    //   setTime( new Date().getTime())
-    // }
-    // else {
-    //   setAnnounce('calm down');
-    //   setShowModal(true);
-    //   setIsStart(false);
-    // }
   }
 
   const turnCards = () => {
@@ -140,6 +130,8 @@ function App() {
         })
         setSelect(0);
         setDisable(false);
+        setChoiceOne(null);
+        setChoiceTwo(null);
       } else {
         setTern(prv => prv - 1);
         setTimeout(() => {
